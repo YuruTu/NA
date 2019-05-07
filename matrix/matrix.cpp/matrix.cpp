@@ -10,13 +10,13 @@ using std::endl;
 using std::cout;
 using std::istream;
 const double EPS = 1e-10;
-void Matrix::initialize() {//³õÊ¼»¯¾ØÕó´óĞ¡
-	p = new double*[rows_num];//·ÖÅärows_num¸öÖ¸Õë
+void Matrix::initialize() {//åˆå§‹åŒ–çŸ©é˜µå¤§å°
+	p = new double*[rows_num];//åˆ†é…rows_numä¸ªæŒ‡é’ˆ
 	for (int i = 0; i < rows_num; ++i) {
-		p[i] = new double[cols_num];//Îªp[i]½øĞĞ¶¯Ì¬ÄÚ´æ·ÖÅä£¬´óĞ¡Îªcols
+		p[i] = new double[cols_num];//ä¸ºp[i]è¿›è¡ŒåŠ¨æ€å†…å­˜åˆ†é…ï¼Œå¤§å°ä¸ºcols
 	}
 }
-//ÉùÃ÷Ò»¸öÈ«0¾ØÕó
+//å£°æ˜ä¸€ä¸ªå…¨0çŸ©é˜µ
 Matrix::Matrix(int rows, int cols)
 {
 	rows_num = rows;
@@ -28,7 +28,7 @@ Matrix::Matrix(int rows, int cols)
 		}
 	}
 }
-//ÉùÃ÷Ò»¸öÖµÈ«²¿ÎªvalueµÄ¾ØÕó
+//å£°æ˜ä¸€ä¸ªå€¼å…¨éƒ¨ä¸ºvalueçš„çŸ©é˜µ
 Matrix::Matrix(int rows, int cols, double value)
 {
 	rows_num = rows;
@@ -41,11 +41,14 @@ Matrix::Matrix(int rows, int cols, double value)
 	}
 }
 
-//Îö¹¹º¯Êı
+//ææ„å‡½æ•°
 Matrix::~Matrix() {
-
+	for (int i = 0; i < rows_num; ++i) {
+			delete[] p[i];
+		}
+		delete[] p;
 }
-//ÊµÏÖ¾ØÕóµÄ¸´ÖÆ
+//å®ç°çŸ©é˜µçš„å¤åˆ¶
 Matrix& Matrix::operator=(const Matrix& m)
 {
 	if (this == &m) {
@@ -70,7 +73,7 @@ Matrix& Matrix::operator=(const Matrix& m)
 	}
 	return *this;
 }
-//½«Êı×éµÄÖµ´«µİ¸ø¾ØÕó(ÒªÇó¾ØÕóµÄ´óĞ¡ÒÑ¾­±»ÉùÃ÷¹ıÁË)
+//å°†æ•°ç»„çš„å€¼ä¼ é€’ç»™çŸ©é˜µ(è¦æ±‚çŸ©é˜µçš„å¤§å°å·²ç»è¢«å£°æ˜è¿‡äº†)
 Matrix& Matrix::operator=(double *a) {
 	for (int i = 0; i < rows_num; i++) {
 		for (int j = 0; j < cols_num; j++) {
@@ -79,7 +82,7 @@ Matrix& Matrix::operator=(double *a) {
 	}
 	return *this;
 }
-//+=²Ù×÷
+//+=æ“ä½œ
 Matrix& Matrix::operator+=(const Matrix& m)
 {
 	for (int i = 0; i < rows_num; i++) {
@@ -89,7 +92,7 @@ Matrix& Matrix::operator+=(const Matrix& m)
 	}
 	return *this;
 }
-//ÊµÏÖ-=
+//å®ç°-=
 Matrix& Matrix::operator-=(const Matrix& m)
 {
 	for (int i = 0; i < rows_num; i++) {
@@ -99,10 +102,10 @@ Matrix& Matrix::operator-=(const Matrix& m)
 	}
 	return *this;
 }
-//ÊµÏÖ*=
+//å®ç°*=
 Matrix& Matrix::operator*=(const Matrix& m)
 {
-	Matrix temp(rows_num, m.cols_num);//ÈôC=AB,Ôò¾ØÕóCµÄĞĞÊıµÈÓÚ¾ØÕóAµÄĞĞÊı£¬CµÄÁĞÊıµÈÓÚBµÄÁĞÊı¡£
+	Matrix temp(rows_num, m.cols_num);//è‹¥C=AB,åˆ™çŸ©é˜µCçš„è¡Œæ•°ç­‰äºçŸ©é˜µAçš„è¡Œæ•°ï¼ŒCçš„åˆ—æ•°ç­‰äºBçš„åˆ—æ•°ã€‚
 	for (int i = 0; i < temp.rows_num; i++) {
 		for (int j = 0; j < temp.cols_num; j++) {
 			for (int k = 0; k < cols_num; k++) {
@@ -113,7 +116,7 @@ Matrix& Matrix::operator*=(const Matrix& m)
 	*this = temp;
 	return *this;
 }
-//ÊµÏÖ¾ØÕóµÄ³Ë·¨
+//å®ç°çŸ©é˜µçš„ä¹˜æ³•
 Matrix Matrix::operator*(const Matrix & m)const {
 	Matrix ba_M(rows_num, m.cols_num, 0.0);
 	for (int i = 0; i < rows_num; i++) {
@@ -129,7 +132,7 @@ Matrix Matrix::operator*(const Matrix & m)const {
 Matrix Matrix::Hadamard(const Matrix & m, const Matrix & n)
 {	
 	if ((m.cols_num != n.cols_num) || (m.rows_num != n.rows_num)) {
-		cout << "¾ØÕó±ØĞëĞĞÁĞÏàµÈ£¬·ñÔòÎŞ·¨½øĞĞHadmard³Ë»ı" << endl;
+		cout << "çŸ©é˜µå¿…é¡»è¡Œåˆ—ç›¸ç­‰ï¼Œå¦åˆ™æ— æ³•è¿›è¡ŒHadmardä¹˜ç§¯" << endl;
 		abort();
 	}
 	Matrix ans(m.rows_num, m.cols_num, 0.0);
@@ -142,14 +145,14 @@ Matrix Matrix::Hadamard(const Matrix & m, const Matrix & n)
 }
 
 
-//½â·½³ÌAx=b
+//è§£æ–¹ç¨‹Ax=b
 Matrix Matrix::Solve(const Matrix &A, const Matrix &b)
 {
-	//¸ßË¹ÏûÈ¥·¨ÊµÏÖAx=bµÄ·½³ÌÇó½â
+	//é«˜æ–¯æ¶ˆå»æ³•å®ç°Ax=bçš„æ–¹ç¨‹æ±‚è§£
 	for (int i = 0; i < A.rows_num; i++) {
 		if (A.p[i][i] == 0) {
 
-			cout << "ÇëÖØĞÂÊäÈë" << endl;
+			cout << "è¯·é‡æ–°è¾“å…¥" << endl;
 		}
 		for (int j = i + 1; j < A.rows_num; j++) {
 			for (int k = i + 1; k < A.cols_num; k++) {
@@ -164,7 +167,7 @@ Matrix Matrix::Solve(const Matrix &A, const Matrix &b)
 		}
 	}
 
-	// ·´Ïò´ú»»
+	// åå‘ä»£æ¢
 	Matrix x(b.rows_num, 1);
 	x.p[x.rows_num - 1][0] = b.p[x.rows_num - 1][0] / A.p[x.rows_num - 1][x.rows_num - 1];
 	if (abs(x.p[x.rows_num - 1][0]) < EPS)
@@ -182,9 +185,9 @@ Matrix Matrix::Solve(const Matrix &A, const Matrix &b)
 	return x;
 }
 
-//¾ØÕóÏÔÊ¾
+//çŸ©é˜µæ˜¾ç¤º
 void Matrix::Show() const {
-	//cout << rows_num <<" "<<cols_num<< endl;//ÏÔÊ¾¾ØÕóµÄĞĞÊıºÍÁĞÊı
+	//cout << rows_num <<" "<<cols_num<< endl;//æ˜¾ç¤ºçŸ©é˜µçš„è¡Œæ•°å’Œåˆ—æ•°
 	for (int i = 0; i < rows_num; i++) {
 		for (int j = 0; j < cols_num; j++) {
 			cout << p[i][j] << " ";
@@ -193,7 +196,7 @@ void Matrix::Show() const {
 	}
 	cout << endl;
 }
-//ÊµÏÖĞĞ±ä»»
+//å®ç°è¡Œå˜æ¢
 void Matrix::swapRows(int a, int b)
 {
 	a--;
@@ -202,9 +205,9 @@ void Matrix::swapRows(int a, int b)
 	p[a] = p[b];
 	p[b] = temp;
 }
-//¼ÆËã¾ØÕóĞĞÁĞÊ½µÄÖµ
+//è®¡ç®—çŸ©é˜µè¡Œåˆ—å¼çš„å€¼
 double Matrix::det() {
-	//Îª¼ÆËãĞĞÁĞÊ½×öÒ»¸ö±¸·İ
+	//ä¸ºè®¡ç®—è¡Œåˆ—å¼åšä¸€ä¸ªå¤‡ä»½
 	double ** back_up;
 	back_up = new double *[rows_num];
 	for (int i = 0; i < rows_num; i++) {
@@ -216,19 +219,19 @@ double Matrix::det() {
 		}
 	}
 	if (rows_num != cols_num) {
-		std::abort();//Ö»ÓĞ·½Õó²ÅÄÜ¼ÆËãĞĞÁĞÊ½£¬·ñÔòµ÷ÓÃÖĞ¶ÏÇ¿ÖÆÍ£Ö¹³ÌĞò
+		std::abort();//åªæœ‰æ–¹é˜µæ‰èƒ½è®¡ç®—è¡Œåˆ—å¼ï¼Œå¦åˆ™è°ƒç”¨ä¸­æ–­å¼ºåˆ¶åœæ­¢ç¨‹åº
 	}
 	double ans = 1;
 	for (int i = 0; i < rows_num; i++) {
-		//Í¨¹ıĞĞ±ä»¯µÄĞÎÊ½£¬Ê¹µÃ¾ØÕó¶Ô½ÇÏßÉÏµÄÖ÷ÔªËØ²»Îª0
+		//é€šè¿‡è¡Œå˜åŒ–çš„å½¢å¼ï¼Œä½¿å¾—çŸ©é˜µå¯¹è§’çº¿ä¸Šçš„ä¸»å…ƒç´ ä¸ä¸º0
 		if (abs(p[i][i]) <= EPS) {
 			bool flag = false;
 			for (int j = 0; (j < cols_num) && (!flag); j++) {
-				//Èô¾ØÕóµÄÒ»¸ö¶Ô½ÇÏßÉÏµÄÔªËØ½Ó½üÓÚ0ÇÒÄÜ¹»Í¨¹ıĞĞ±ä»»Ê¹µÃ¾ØÕó¶Ô½ÇÏßÉÏµÄÔªËØ²»Îª0
+				//è‹¥çŸ©é˜µçš„ä¸€ä¸ªå¯¹è§’çº¿ä¸Šçš„å…ƒç´ æ¥è¿‘äº0ä¸”èƒ½å¤Ÿé€šè¿‡è¡Œå˜æ¢ä½¿å¾—çŸ©é˜µå¯¹è§’çº¿ä¸Šçš„å…ƒç´ ä¸ä¸º0
 				if ((abs(p[i][j]) > EPS) && (abs(p[j][i]) > EPS)) {
 					flag = true;
-					//×¢£º½øĞĞ»¥»»ºó,p[i][j]±äÎªp[j][j]£¬p[j][i]±äÎªp[i][i]
-					//¶Ô¾ØÕó½øĞĞĞĞ±ä»»
+					//æ³¨ï¼šè¿›è¡Œäº’æ¢å,p[i][j]å˜ä¸ºp[j][j]ï¼Œp[j][i]å˜ä¸ºp[i][i]
+					//å¯¹çŸ©é˜µè¿›è¡Œè¡Œå˜æ¢
 					double temp;
 					for (int k = 0; k < cols_num; k++) {
 						temp = p[i][k];
@@ -258,21 +261,21 @@ double Matrix::det() {
 	}
 	return ans;
 }
-//·µ»Ø¾ØÕóµÚiĞĞµÚjÁĞµÄÊı
+//è¿”å›çŸ©é˜µç¬¬iè¡Œç¬¬jåˆ—çš„æ•°
 double Matrix::Point(int i, int j) const {
 	return this->p[i][j];
 }
-//Çó¾ØÕóµÄÄæ¾ØÕó
+//æ±‚çŸ©é˜µçš„é€†çŸ©é˜µ
 Matrix Matrix::inv(Matrix A) {
 	if (A.rows_num != A.cols_num) {
-		std::cout << "Ö»ÓĞ·½ÕóÄÜÇóÄæ¾ØÕó" << std::endl;
-		std::abort();//Ö»ÓĞ·½ÕóÄÜÇóÄæ¾ØÕó
+		std::cout << "åªæœ‰æ–¹é˜µèƒ½æ±‚é€†çŸ©é˜µ" << std::endl;
+		std::abort();//åªæœ‰æ–¹é˜µèƒ½æ±‚é€†çŸ©é˜µ
 	}
 	double temp;
 	Matrix A_B = Matrix(A.rows_num, A.cols_num);
-	A_B = A;//Îª¾ØÕóA×öÒ»¸ö±¸·İ
+	A_B = A;//ä¸ºçŸ©é˜µAåšä¸€ä¸ªå¤‡ä»½
 	Matrix B = eye(A.rows_num);
-	//½«Ğ¡ÓÚEPSµÄÊıÈ«²¿ÖÃ0
+	//å°†å°äºEPSçš„æ•°å…¨éƒ¨ç½®0
 	for (int i = 0; i < A.rows_num; i++) {
 		for (int j = 0; j < A.cols_num; j++) {
 			if (abs(A.p[i][j]) <= EPS) {
@@ -280,7 +283,7 @@ Matrix Matrix::inv(Matrix A) {
 			}
 		}
 	}
-	//Ñ¡ÔñĞèÒª»¥»»µÄÁ½ĞĞÑ¡Ö÷Ôª
+	//é€‰æ‹©éœ€è¦äº’æ¢çš„ä¸¤è¡Œé€‰ä¸»å…ƒ
 	for (int i = 0; i < A.rows_num; i++) {
 		if (abs(A.p[i][i]) <= EPS) {
 			bool flag = false;
@@ -298,12 +301,12 @@ Matrix Matrix::inv(Matrix A) {
 				}
 			}
 			if (!flag) {
-				std::cout << "Äæ¾ØÕó²»´æÔÚ\n";
+				std::cout << "é€†çŸ©é˜µä¸å­˜åœ¨\n";
 				std::abort();
 			}
 		}
 	}
-	//Í¨¹ı³õµÈĞĞ±ä»»½«A±äÎªÉÏÈı½Ç¾ØÕó
+	//é€šè¿‡åˆç­‰è¡Œå˜æ¢å°†Aå˜ä¸ºä¸Šä¸‰è§’çŸ©é˜µ
 	double temp_rate;
 	for (int i = 0; i < A.rows_num; i++) {
 		for (int j = i + 1; j < A.rows_num; j++) {
@@ -315,7 +318,7 @@ Matrix Matrix::inv(Matrix A) {
 			A.p[j][i] = 0;
 		}
 	}
-	//Ê¹¶Ô½ÇÔªËØ¾ùÎª1
+	//ä½¿å¯¹è§’å…ƒç´ å‡ä¸º1
 	for (int i = 0; i < A.rows_num; i++) {
 		temp = A.p[i][i];
 		for (int j = 0; j < A.cols_num; j++) {
@@ -323,8 +326,8 @@ Matrix Matrix::inv(Matrix A) {
 			B.p[i][j] /= temp;
 		}
 	}
-	//std::cout<<"Ëã·¨¿É¿¿ĞÔ¼ì²â£¬Èô¿É¿¿£¬Êä³öÉÏÈı½Ç¾ØÕó"<<std::endl;
-	//½«ÒÑ¾­±äÎªÉÏÈı½Ç¾ØÕóµÄA£¬±äÎªµ¥Î»¾ØÕó
+	//std::cout<<"ç®—æ³•å¯é æ€§æ£€æµ‹ï¼Œè‹¥å¯é ï¼Œè¾“å‡ºä¸Šä¸‰è§’çŸ©é˜µ"<<std::endl;
+	//å°†å·²ç»å˜ä¸ºä¸Šä¸‰è§’çŸ©é˜µçš„Aï¼Œå˜ä¸ºå•ä½çŸ©é˜µ
 	for (int i = A.rows_num - 1; i >= 1; i--) {
 		for (int j = i - 1; j >= 0; j--) {
 			temp = A.p[j][i];
@@ -334,17 +337,17 @@ Matrix Matrix::inv(Matrix A) {
 			}
 		}
 	}
-	std::cout << "Ëã·¨¿É¿¿ĞÔ¼ì²â£¬Èô¿É¿¿£¬Êä³öµ¥Î»¾ØÕó" << std::endl;
+	std::cout << "ç®—æ³•å¯é æ€§æ£€æµ‹ï¼Œè‹¥å¯é ï¼Œè¾“å‡ºå•ä½çŸ©é˜µ" << std::endl;
 	for (int i = 0; i < A.rows_num; i++) {
 		for (int j = 0; j < A.cols_num; j++) {
 			printf("%7.4lf\t\t", A.p[i][j]);
 		}
 		cout << endl;
 	}
-	A = A_B;//»¹Ô­A
-	return B;//·µ»Ø¸Ã¾ØÕóµÄÄæ¾ØÕó
+	A = A_B;//è¿˜åŸA
+	return B;//è¿”å›è¯¥çŸ©é˜µçš„é€†çŸ©é˜µ
 }
-//ÖÆÔìÒ»¸öµ¥Î»¾ØÕó
+//åˆ¶é€ ä¸€ä¸ªå•ä½çŸ©é˜µ
 Matrix Matrix::eye(int n) {
 	Matrix A(n, n);
 	for (int i = 0; i < n; i++) {
@@ -359,14 +362,14 @@ Matrix Matrix::eye(int n) {
 	}
 	return A;
 }
-//¶ÁÈ¡¾ØÕóĞĞÁĞÊı
+//è¯»å–çŸ©é˜µè¡Œåˆ—æ•°
 int Matrix::row() const {
 	return rows_num;
 }
 int Matrix::col() const {
 	return cols_num;
 }
-//ÊµÏÖ¾ØÕóµÄ×ªÖÃ
+//å®ç°çŸ©é˜µçš„è½¬ç½®
 Matrix Matrix::T(const Matrix & m)
 {
 	int col_size = m.col();
@@ -379,7 +382,7 @@ Matrix Matrix::T(const Matrix & m)
 	}
 	return mt;
 }
-//¸ßË¹ÏûÔª·¨
+//é«˜æ–¯æ¶ˆå…ƒæ³•
 Matrix Matrix::gaussianEliminate()
 {
 	Matrix Ab(*this);
@@ -387,8 +390,8 @@ Matrix Matrix::gaussianEliminate()
 	int cols = Ab.cols_num;
 	int Acols = cols - 1;
 
-	int i = 0; //¸ú×ÙĞĞ
-	int j = 0; //¸ú×ÙÁĞ
+	int i = 0; //è·Ÿè¸ªè¡Œ
+	int j = 0; //è·Ÿè¸ªåˆ—
 	while (i < rows)
 	{
 		bool flag = false;
@@ -434,7 +437,7 @@ Matrix Matrix::gaussianEliminate()
 	}
 	return Ab;
 }
-//ÊµÏÖ¾ØÕóµÄÊäÈë
+//å®ç°çŸ©é˜µçš„è¾“å…¥
 istream& operator>>(istream& is, Matrix& m)
 {
 	for (int i = 0; i < m.rows_num; i++) {
